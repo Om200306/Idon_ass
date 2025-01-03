@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../contextApi/userContext";
 
 export function Head() {
   let navigate = useNavigate();
  
-     let user=sessionStorage.getItem("event");
-  
+     let userS=localStorage.getItem("event");
+     let {user, setUser}=useContext(UserContext);
 
   return (
     <div className="bg-pink-500 p-2 text-white">
@@ -15,18 +16,18 @@ export function Head() {
         </div>
 
         <div className="flex gap-8">
-          <button onClick={()=>navigate("/slot")}>slotes</button>
-          <button>About us</button>
+          <button onClick={() => navigate("/slot")}>slotes</button>
+          <button onClick={()=>{user.role=="admin" ? navigate("/adminBook") : navigate("/userBook") }}>Booked</button>
         </div>
 
         <div className="flex gap-4 items-center">
-          {user ? (
+          {userS ? (
             <>
-            <h1>Hi , {user}</h1>
+            <h1>Hi , {userS}</h1>
               <button
                 className="border-2 border-solid border-white p-2 rounded-lg"
                onClick={()=>{
-                sessionStorage.setItem("event","");
+                localStorage.setItem("event","");
                 navigate("/")
                }}
               >

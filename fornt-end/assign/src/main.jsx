@@ -5,10 +5,10 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { Head } from './component/navi.jsx'
 
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-    <Head/>
     <App />
     </BrowserRouter>
   </StrictMode>,

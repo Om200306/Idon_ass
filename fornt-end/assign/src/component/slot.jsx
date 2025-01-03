@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import UserContext from "../contextApi/userContext";
 
 
   export function Slots(){
@@ -9,20 +10,13 @@ import { useEffect, useState } from "react"
     let [date,setDate]=useState("");
 
 
-      let token=sessionStorage.getItem("token");
+      let token=localStorage.getItem("token");
     
-   
-    useEffect(()=>{
-        axios.get("https://ideon-backend.onrender.com/profile",{headers:{Authorization: token,}})
-        .then((res)=>{
-           setUserData(res.data);
-        })
-        .catch((err)=>{
-          console.log(err);
-        })
-        
-    },[userData])
+     let {user, setUser}=useContext(UserContext);
 
+        useEffect(()=>{
+             setUserData(user);
+        },[user])
 
     function hendleDate(e){
 
@@ -36,20 +30,24 @@ import { useEffect, useState } from "react"
     useEffect(()=>{
         axios.get(`https://ideon-backend.onrender.com/appointment/slot/${date}`)
         .then((res)=>{
-         setData(res.data);
+            setData(res.data)
         })
         .catch((err)=>{
           console.log();
           
         })
-    },[date])
+    },[data,date])
 
     function hendleToggle(id){
 
+        let obj={
+            userNum:userData._id
+        }
+
        
-        axios.patch(`https://ideon-backend.onrender.com/appointment/bookSlot/${id}`)
+        axios.patch(`https://ideon-backend.onrender.com/appointment/bookSlot/${id}`,obj)
         .then((res)=>{
-            console.log(res);
+            alert(res.data)
         })
         .catch((err)=>{
           console.log(err);
@@ -70,7 +68,7 @@ import { useEffect, useState } from "react"
 
         axios.post("https://ideon-backend.onrender.com/appointment/slot/booking",obj,{headers:{Authorization: token,}})
         .then((res)=>{
-            console.log(res);
+            alert(res.data)
             
         })
         .catch((err)=>{
@@ -83,7 +81,7 @@ import { useEffect, useState } from "react"
         
         axios.delete(`https://ideon-backend.onrender.com/appointment/bookSlot/${id}`,{headers:{Authorization: token,}})
         .then((res)=>{
-            console.log(res);
+            alert(res.data)
             
         })
         .catch((err)=>{
@@ -108,7 +106,7 @@ import { useEffect, useState } from "react"
                    <span>End-Time</span> <input className="border-solid border-2 border-pink-500 rounded-md p-2" type="time" placeholder="end Time" required/>
                    
 
-                    <button type="submit" className="border-solid border-2 text-white bg-pink-500 rounded-md p-1">Sing Up</button>
+                    <button type="submit" className="border-solid border-2 text-white bg-pink-500 rounded-md p-1">submit</button>
 
                     </form>
 
@@ -132,7 +130,7 @@ import { useEffect, useState } from "react"
 
             <div>
 
-             <form className="flex flex-col gap-4 relative top-4 p-4 w-5/12 m-auto">
+             <form className="flex flex-col gap-4 relative top-4 p-4 w-5/12 m-auto" onSubmit={hendleDate}>
              <input type="date" placeholder="date" className="border-solid border-2 border-pink-500 rounded-md p-2"/>
              <button type="submit"  className="border-solid border-2 text-white bg-pink-500 rounded-md p-1">search</button>
              </form>
@@ -148,12 +146,12 @@ import { useEffect, useState } from "react"
                 {
                     Object.entries(data).map(([i,ele])=>{
                         return(
-                            <div key={i}>
-                                <p><b>Date</b> :{ele.date}</p>
-                                <p><b>Day</b> :{ele.day}</p>
-                                <p><b>Start-Time</b> : {ele.startTime}</p>
-                                <p><b>End-Time</b> : {ele.endTime}</p>
-                                <p className={ele.isBooked ? "bg-red-500 text-center rounded-md" : "bg-green-500 text-center rounded-md"}>{ele.isBooked ? "Booked" : "Available"}</p>
+                            <div key={i} className=" border-2 border-solid border-gray-400 rounded-md p-3">
+                                    <p><b>Date</b> :{ele.date}</p>
+                                    <p><b>Day</b> :{ele.day}</p>
+                                    <p><b>Start-Time</b> : {ele.startTime}</p>
+                                    <p><b>End-Time</b> : {ele.endTime}</p>
+                                    <p className={ele.isBooked ? "bg-red-500 text-center rounded-md" : "bg-green-500 text-center rounded-md"}>{ele.isBooked ? "Booked" : "Available"}</p>
                                   
                                <div className="flex gap-4" id="btn"> <button className="bg-gray-500 rounded-md text-center p-2 mt-4" onClick={()=>hendleToggle(ele._id)}>{ele.isBooked ? "cenceled" :"book"}</button>
                                

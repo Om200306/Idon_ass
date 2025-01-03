@@ -18,8 +18,8 @@ export function LongIn(){
 
        axios.post("https://ideon-backend.onrender.com/api/login",obj)
        .then((res)=>{
-        sessionStorage.setItem("token", res.data.token);
-        sessionStorage.setItem("event",obj.email);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("event",obj.email);
         navigate("/");
         
        })
